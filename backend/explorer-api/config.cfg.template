@@ -1,0 +1,42 @@
+{
+    "mongo": {
+        "uri": "",
+        "address": "localhost",
+        "port": 27017,
+        "dbName": "test"
+    },
+    "node": {
+        "address": "localhost",
+        "port": 16888
+    },
+    "log": {
+        "level": "debug"
+    },
+    "server": {
+        "port": 7554,
+        "socketIOPort": 2096
+    },
+    "blockchain": {
+        "networkId": "test_chain"
+    },
+    "coinmarketcap":{
+        "key": "COINMARKETCAP_API_KEY",
+        "dneroId": 2416,
+        "dtokenId": 3822
+    },
+    "cert":{
+        "enabled": false,
+        "key": "",
+        "crt": ""
+    },
+    "redis": {
+        "enabled": false,
+        "isCluster": false,
+        "host": "127.0.0.1",
+        "port": 6379,
+        "password": "",
+        "family": 4,
+        "db": 0
+    },
+    "defaultDneroChainID": "testnet"
+}
