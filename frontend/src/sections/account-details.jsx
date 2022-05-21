@@ -26,14 +26,14 @@ import LoadingPanel from 'common/components/loading-panel';
 import StakeTxsTable from "../common/components/stake-txs";
 import SmartContract from 'common/components/smart-contract';
 import TokenTxsTable from "common/components/token-txs-table";
-import TDropStakeTable from "common/components/tdrop-stake-table";
+import DDropStakeTable from "common/components/ddrop-stake-table";
 
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import { Multiselect } from 'multiselect-react-dropdown';
 import { useIsMountedRef } from 'common/helpers/hooks';
 const NUM_TRANSACTIONS = 20;
 const today = new Date().toISOString().split("T")[0];
-const INITIAL_TOKEN_BALANCE = { TDrop: '0', WDToken: '0', TBill: '0' };
+const INITIAL_TOKEN_BALANCE = { DDrop: '0', WDToken: '0', TBill: '0' };
 export default class AccountDetails extends React.Component {
   _isMounted = true;
 
@@ -51,7 +51,7 @@ export default class AccountDetails extends React.Component {
       includeService: false,
       hasOtherTxs: true,
       hasDneroStakes: false,
-      hasTfuelStakes: false,
+      hasDtokenStakes: false,
       hasDownloadTx: false,
       hasStartDateErr: false,
       hasEndDateErr: false,
@@ -64,8 +64,8 @@ export default class AccountDetails extends React.Component {
       beneficiary: "",
       beneficiaryTNS: null,
       tabIndex: 0,
-      hasTNT721: false,
-      hasTNT20: false,
+      hasDNC721: false,
+      hasDNC20: false,
       hasInternalTxs: false,
       hasToken: false,
       tokenBalance: INITIAL_TOKEN_BALANCE
@@ -115,7 +115,7 @@ export default class AccountDetails extends React.Component {
       dtokenHolderTxs,
       dtokenSourceTxs,
       hasDneroStakes: dneroHolderTxs.length + dneroSourceTxs.length > 0,
-      hasTfuelStakes: dtokenHolderTxs.length + dtokenSourceTxs.length > 0
+      hasDtokenStakes: dtokenHolderTxs.length + dtokenSourceTxs.length > 0
     });
   }
   getEmptyAccount(address) {
@@ -136,8 +136,8 @@ export default class AccountDetails extends React.Component {
         beneficiary: "",
         tabIndex: 0,
         hasToken: false,
-        hasTNT20: false,
-        hasTNT721: false,
+        hasDNC20: false,
+        hasDNC721: false,
         tokenBalance: INITIAL_TOKEN_BALANCE
       })
       this.fetchData(this.props.match.params.accountAddress);
@@ -268,7 +268,7 @@ export default class AccountDetails extends React.Component {
   }
 
   getTokenTransactionsNumber(address) {
-    const tokenList = ["TNT-721", "TNT-20", "DTOKEN"];
+    const tokenList = ["DNC-721", "DNC-20", "DTOKEN"];
     const self = this;
     for (let name of tokenList) {
       tokenService.getTokenTxsNumByAccountAndType(address, name)
@@ -276,10 +276,10 @@ export default class AccountDetails extends React.Component {
           if (!self._isMounted) return;
           const num = get(res, 'data.body.total_number');
           if (num > 0) {
-            if (name === 'TNT-721') {
-              this.setState({ hasTNT721: true });
-            } else if (name === 'TNT-20') {
-              this.setState({ hasTNT20: true });
+            if (name === 'DNC-721') {
+              this.setState({ hasDNC721: true });
+            } else if (name === 'DNC-20') {
+              this.setState({ hasDNC20: true });
             } else if (name === 'DTOKEN') {
               this.setState({ hasInternalTxs: true });
             }
@@ -436,15 +436,15 @@ export default class AccountDetails extends React.Component {
   }
   fetchTokenBalance = async (accountAddress) => {
     const tokenMap = {
-      TDrop: '0x1336739B05C7Ab8a526D40DCC0d04a826b5f8B03', //address for mainnet
-      // TDrop: '0x08a0c0e8EFd07A98db11d79165063B6Bc2469ADF', //address for testnet
+      DDrop: '0x1336739B05C7Ab8a526D40DCC0d04a826b5f8B03', //address for mainnet
+      // DDrop: '0x08a0c0e8EFd07A98db11d79165063B6Bc2469ADF', //address for testnet
       WDToken: '0x4dc08b15ea0e10b96c41aec22fab934ba15c983e',
       TBill: '0x22Cb20636c2d853DE2b140c2EadDbFD6C3643a39'
     }
     const decimalsMap = {
       'TBill': 9,
       'WDToken': 18,
-      'TDrop': 18
+      'DDrop': 18
     }
     let keys = Object.keys(tokenMap);
     let tokenBalance = this.state.tokenBalance;
@@ -466,9 +466,9 @@ export default class AccountDetails extends React.Component {
   }
   render() {
     const { account, transactions, currentPage, totalPages, errorType, loading_txns, tokenBalance,
-      hasOtherTxs, hasDneroStakes, hasTfuelStakes, dneroHolderTxs, hasDownloadTx, dneroSourceTxs,
+      hasOtherTxs, hasDneroStakes, hasDtokenStakes, dneroHolderTxs, hasDownloadTx, dneroSourceTxs,
       dtokenHolderTxs, dtokenSourceTxs, price, hasStartDateErr, hasEndDateErr, isDownloading, hasRefreshBtn,
-      typeOptions, rewardSplit, beneficiary, tabIndex, hasTNT20, hasTNT721, hasToken, hasInternalTxs, accountTNS, beneficiaryTNS } = this.state;
+      typeOptions, rewardSplit, beneficiary, tabIndex, hasDNC20, hasDNC721, hasToken, hasInternalTxs, accountTNS, beneficiaryTNS } = this.state;
     const { accountAddress } = this.props.match.params;
     return (
       <div className="content account">
@@ -490,7 +490,7 @@ export default class AccountDetails extends React.Component {
                 <DetailsRow label="Balance" data={<Balance balance={account.balance} price={price} />} />
                 <DetailsRow label="Sequence" data={account.sequence} />
                 {hasToken && <DetailsRow label="Token" data={<Token tokenBalance={tokenBalance} />} />}
-                {((hasDneroStakes && dneroHolderTxs.length > 0) || (hasTfuelStakes && dtokenHolderTxs.length > 0)) &&
+                {((hasDneroStakes && dneroHolderTxs.length > 0) || (hasDtokenStakes && dtokenHolderTxs.length > 0)) &&
                   <DetailsRow label="Reward Split" data={rewardSplit / 100 + '%'} />}
                 {rewardSplit !== 0 && <DetailsRow label="Beneficiary" data={<AddressTNS hash={beneficiary} tns={beneficiaryTNS} />} />}
               </tbody>
@@ -502,13 +502,13 @@ export default class AccountDetails extends React.Component {
             {dneroHolderTxs.length > 0 && <StakeTxsTable type='holder' stakeCoinType='dnero' txs={dneroHolderTxs} price={price} />}
           </div>
         }
-        {hasTfuelStakes &&
+        {hasDtokenStakes &&
           <div className="stake-container">
             {dtokenSourceTxs.length > 0 && <StakeTxsTable type='source' stakeCoinType='dtoken' txs={dtokenSourceTxs} price={price} />}
             {dtokenHolderTxs.length > 0 && <StakeTxsTable type='holder' stakeCoinType='dtoken' txs={dtokenHolderTxs} price={price} />}
           </div>
         }
-        <TDropStakeTable address={accountAddress} />
+        <DDropStakeTable address={accountAddress} />
         <Tabs className="dnero-tabs" selectedIndex={tabIndex} onSelect={this.setTabIndex}>
           <TabList>
             {transactions && transactions.length > 0 && <Tab>Transactions</Tab>}
@@ -516,8 +516,8 @@ export default class AccountDetails extends React.Component {
               <Tab>Contract</Tab>
             }
             {hasInternalTxs && <Tab>Internal Txns</Tab>}
-            {hasTNT20 && <Tab>TNT20 Token Txns</Tab>}
-            {hasTNT721 && <Tab>TNT721 Token Txns</Tab>}
+            {hasDNC20 && <Tab>DNC20 Token Txns</Tab>}
+            {hasDNC721 && <Tab>DNC721 Token Txns</Tab>}
           </TabList>
           {transactions && transactions.length > 0 && < TabPanel >
             {!transactions && loading_txns &&
@@ -594,11 +594,11 @@ export default class AccountDetails extends React.Component {
           {hasInternalTxs && <TabPanel>
             <TokenTab type="DTOKEN" address={account.address} />
           </TabPanel>}
-          {hasTNT20 && <TabPanel>
-            <TokenTab type="TNT-20" address={account.address} />
+          {hasDNC20 && <TabPanel>
+            <TokenTab type="DNC-20" address={account.address} />
           </TabPanel>}
-          {hasTNT721 && <TabPanel>
-            <TokenTab type="TNT-721" address={account.address} />
+          {hasDNC721 && <TabPanel>
+            <TokenTab type="DNC-721" address={account.address} />
           </TabPanel>}
         </Tabs>
       </div >);
@@ -617,15 +617,15 @@ const Balance = ({ balance, price }) => {
 
 const Token = ({ tokenBalance }) => {
   const tokenMap = {
-    TDrop: '0x1336739B05C7Ab8a526D40DCC0d04a826b5f8B03', //address for mainnet
-    // TDrop: '0x08a0c0e8EFd07A98db11d79165063B6Bc2469ADF', //address for testnet
+    DDrop: '0x1336739B05C7Ab8a526D40DCC0d04a826b5f8B03', //address for mainnet
+    // DDrop: '0x08a0c0e8EFd07A98db11d79165063B6Bc2469ADF', //address for testnet
     WDToken: '0x4dc08b15ea0e10b96c41aec22fab934ba15c983e',
     TBill: '0x22Cb20636c2d853DE2b140c2EadDbFD6C3643a39'
   }
   const decimalsMap = {
     'TBill': 9,
     'WDToken': 18,
-    'TDrop': 18
+    'DDrop': 18
   }
   return (
     <div className="act balance">

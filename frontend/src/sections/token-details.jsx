@@ -10,7 +10,7 @@ import Pagination from "common/components/pagination";
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import { smartContractService } from 'common/services/smartContract';
 import ReadContract from 'common/components/read-contract';
-import Item from 'common/components/tnt721-item';
+import Item from 'common/components/dnc721-item';
 import HolderTable from 'common/components/holder-table';
 import { ethers } from "ethers";
 import smartContractApi from 'common/services/smart-contract-api';
@@ -283,8 +283,8 @@ const TokenDetails = ({ match, location }) => {
 }
 
 const TokenName = ({ info }) => {
-  return <div className={cx({ 'currency tdrop': info.name === 'TDrop Token' })}>
-    {info.name}{info.type === 'TNT-20' && info.symbol && `  (${info.symbol})`}
+  return <div className={cx({ 'currency ddrop': info.name === 'DDrop Token' })}>
+    {info.name}{info.type === 'DNC-20' && info.symbol && `  (${info.symbol})`}
   </div>
 }
 export default TokenDetails;

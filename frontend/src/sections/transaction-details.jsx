@@ -7,7 +7,7 @@ import _truncate from 'lodash/truncate';
 import tns from 'libs/tns';
 
 import { TxnTypes, TxnClasses, TxnPurpose, TxnSplitPurpose, zeroTxAddress, ZeroAddress, CommonFunctionABIs } from 'common/constants';
-import { from, to, date, age, fee, status, type, gasPrice, getTfuelBurnt } from 'common/helpers/transactions';
+import { from, to, date, age, fee, status, type, gasPrice, getDtokenBurnt } from 'common/helpers/transactions';
 import { formatCoin, priceCoin, sumCoin, getHex, validateHex, decodeLogs, formatQuantity } from 'common/helpers/utils';
 import { priceService } from 'common/services/price';
 import { transactionsService } from 'common/services/transaction';
@@ -18,7 +18,7 @@ import DetailsRow from 'common/components/details-row';
 import JsonView from 'common/components/json-view';
 import BodyTag from 'common/components/body-tag';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import Item from 'common/components/tnt721-item';
+import Item from 'common/components/dnc721-item';
 import { useIsMountedRef } from 'common/helpers/hooks';
 
 import { ethers } from "ethers";
@@ -309,7 +309,7 @@ const ServicePayment = ({ transaction, price }) => {
     <table className="details txn-details">
       <tbody>
         <DetailsRow label="Fee" data={<Fee transaction={transaction} />} />
-        <DetailsRow label="DToken Burnt" data={<span className="currency dtoken">{getTfuelBurnt(transaction) + " DToken"}</span>} />
+        <DetailsRow label="DToken Burnt" data={<span className="currency dtoken">{getDtokenBurnt(transaction) + " DToken"}</span>} />
         <DetailsRow label="From Address" data={<AddressTNS hash={data.source.address} tns={transaction.fromTns} />} />
         <DetailsRow label="To Address" data={<AddressTNS hash={data.target.address} tns={transaction.toTns} />} />
         <DetailsRow label="Amount" data={<Amount coins={data.source.coins} price={price} />} />
@@ -326,7 +326,7 @@ const ReserveFund = ({ transaction, price }) => {
     <table className="details txn-details">
       <tbody>
         <DetailsRow label="Fee" data={<Fee transaction={transaction} />} />
-        <DetailsRow label="DToken Burnt" data={<span className="currency dtoken">{getTfuelBurnt(transaction) + " DToken"}</span>} />
+        <DetailsRow label="DToken Burnt" data={<span className="currency dtoken">{getDtokenBurnt(transaction) + " DToken"}</span>} />
         <DetailsRow label="Collateral" data={<Amount coins={data.collateral} price={price} />} />
         <DetailsRow label="Duration" data={data.duration} />
         <DetailsRow label="Amount" data={<Amount coins={data.source.coins} price={price} />} />
@@ -352,7 +352,7 @@ const SplitContract = ({ transaction }) => {
     <table className="details txn-details">
       <tbody>
         <DetailsRow label="Fee" data={<Fee transaction={transaction} />} />
-        <DetailsRow label="DToken Burnt" data={<span className="currency dtoken">{getTfuelBurnt(transaction) + " DToken"}</span>} />
+        <DetailsRow label="DToken Burnt" data={<span className="currency dtoken">{getDtokenBurnt(transaction) + " DToken"}</span>} />
         <DetailsRow label="Duration" data={data.duration} />
         <DetailsRow label="Initiator Address" data={<AddressTNS hash={data.initiator.address} tns={transaction.fromTns} />} />
         <DetailsRow label="Resource Id" data={data.resource_id} />
@@ -382,7 +382,7 @@ const Send = ({ transaction, price }) => {
     <table className="details txn-details">
       <tbody>
         <DetailsRow label="Fee" data={<Fee transaction={transaction} />} />
-        <DetailsRow label="DToken Burnt" data={<span className="currency dtoken">{getTfuelBurnt(transaction) + " DToken"}</span>} />
+        <DetailsRow label="DToken Burnt" data={<span className="currency dtoken">{getDtokenBurnt(transaction) + " DToken"}</span>} />
         {hasTotalCoins ? <DetailsRow label="Total Amount" data={<TotalAmount coins={totalCoins} price={price} />} /> : <></>}
         <DetailsRow label="From Address" data={map(data.inputs, (input, i, inputs) => <CoinbaseOutput key={i} output={input} price={price} isSingle={inputs.length === 1} tns={transaction.fromTns} />)} />
         <DetailsRow label="To Address" data={map(data.outputs, (output, i) => <CoinbaseOutput key={i} output={output} price={price} tns={transaction.toTns} />)} />
@@ -430,7 +430,7 @@ const WithdrawStake = ({ transaction, price }) => {
       <tbody>
         {returnTime > 0 && <DetailsRow label="Estimated Return" data={<ReturnTime returnTime={returnTime} />} />}
         <DetailsRow label="Fee" data={<Fee transaction={transaction} />} />
-        <DetailsRow label="DToken Burnt" data={<span className="currency dtoken">{getTfuelBurnt(transaction) + " DToken"}</span>} />
+        <DetailsRow label="DToken Burnt" data={<span className="currency dtoken">{getDtokenBurnt(transaction) + " DToken"}</span>} />
         <DetailsRow label="Stake Addr." data={<AddressTNS hash={get(data, 'holder.address')} tns={transaction.fromTns} />} />
         <DetailsRow label="Stake" data={<Amount coins={get(data, 'source.coins')} price={price} />} />
         <DetailsRow label="Purpose" data={TxnPurpose[get(data, 'purpose')]} />
@@ -445,7 +445,7 @@ const DepositStake = ({ transaction, price }) => {
     <table className="details txn-details">
       <tbody>
         <DetailsRow label="Fee" data={<Fee transaction={transaction} />} />
-        <DetailsRow label="DToken Burnt" data={<span className="currency dtoken">{getTfuelBurnt(transaction) + " DToken"}</span>} />
+        <DetailsRow label="DToken Burnt" data={<span className="currency dtoken">{getDtokenBurnt(transaction) + " DToken"}</span>} />
         <DetailsRow label="Stake Addr." data={<AddressTNS hash={get(data, 'holder.address')} tns={transaction.toTns} />} />
         <DetailsRow label="Stake" data={<Amount coins={get(data, 'source.coins')} price={price} />} />
         <DetailsRow label="Purpose" data={TxnPurpose[get(data, 'purpose')]} />
@@ -459,7 +459,7 @@ const StakeRewardDistribution = ({ transaction, price }) => {
     <table className="details txn-details">
       <tbody>
         <DetailsRow label="Fee" data={<Fee transaction={transaction} />} />
-        <DetailsRow label="DToken Burnt" data={<span className="currency dtoken">{getTfuelBurnt(transaction) + " DToken"}</span>} />
+        <DetailsRow label="DToken Burnt" data={<span className="currency dtoken">{getDtokenBurnt(transaction) + " DToken"}</span>} />
         <DetailsRow label="Holder" data={<AddressTNS hash={get(data, 'holder.address')} tns={transaction.fromTns} />} />
         <DetailsRow label="Beneficiary" data={<AddressTNS hash={get(data, 'beneficiary.address')} tns={transaction.toTns} />} />
         <DetailsRow label="Purpose" data={TxnSplitPurpose[get(data, 'purpose')]} />
@@ -470,9 +470,9 @@ const StakeRewardDistribution = ({ transaction, price }) => {
 const SmartContract = ({ transaction, handleToggleDetailsClick, price, abiMap }) => {
   const [tabIndex, setTabIndex] = useState(0);
   const [feeSplit, setFeeSplit] = useState(null);
-  const [dtokenSplit, setTfuelSplit] = useState(null);
-  const [hasTnt721Transfer, setHasTnt721Transfer] = useState(false);
-  const [hasTnt20Transfer, setHasTnt20Transfer] = useState(false);
+  const [dtokenSplit, setDtokenSplit] = useState(null);
+  const [hasDnc721Transfer, setHasDnc721Transfer] = useState(false);
+  const [hasDnc20Transfer, setHasDnc20Transfer] = useState(false);
   const [tokens, setTokens] = useState([]);
   const [tokenInfoMap, setTokenInfoMap] = useState();
   const [logs, setLogs] = useState([]);
@@ -510,12 +510,12 @@ const SmartContract = ({ transaction, handleToggleDetailsClick, price, abiMap })
       const eventName = get(log, 'decode.eventName');
       if (eventName !== 'Transfer') return;
       const isIndexed = get(log, 'decode.event.inputs[2].indexed')
-      const type = isIndexed ? 'TNT-721' : 'TNT-20';
-      if (type === "TNT-721" && !hasTnt721Transfer) {
-        setHasTnt721Transfer(true);
+      const type = isIndexed ? 'DNC-721' : 'DNC-20';
+      if (type === "DNC-721" && !hasDnc721Transfer) {
+        setHasDnc721Transfer(true);
       }
-      if (type === "TNT-20" && !hasTnt20Transfer) {
-        setHasTnt20Transfer(true);
+      if (type === "DNC-20" && !hasDnc20Transfer) {
+        setHasDnc20Transfer(true);
       }
       const value = tokenId != null ? 1 : get(log, 'decode.result[2]');
       tokenArr.push({
@@ -538,12 +538,12 @@ const SmartContract = ({ transaction, handleToggleDetailsClick, price, abiMap })
       for (let address of Object.keys(addressMap)) {
         try {
           const abi = [CommonFunctionABIs.name, CommonFunctionABIs.symbol, CommonFunctionABIs.decimals, CommonFunctionABIs.tokenURI];
-          if (addressMap[address].type === 'TNT-20') {
+          if (addressMap[address].type === 'DNC-20') {
             const name = await fetchData(CommonFunctionABIs.name, [], [CommonFunctionABIs.name], address);
             const symbol = await fetchData(CommonFunctionABIs.symbol, [], [CommonFunctionABIs.symbol], address);
             const decimals = await fetchData(CommonFunctionABIs.decimals, [], [CommonFunctionABIs.decimals], address);
             map[address] = { name, symbol, decimals };
-          } else if (addressMap[address].type === 'TNT-721') {
+          } else if (addressMap[address].type === 'DNC-721') {
             // fetch image info
             const inputValues = [addressMap[address].tokenId];
             let url = await fetchData(CommonFunctionABIs.tokenURI, inputValues, [CommonFunctionABIs.tokenURI], address);
@@ -635,7 +635,7 @@ const SmartContract = ({ transaction, handleToggleDetailsClick, price, abiMap })
       const eventName = get(log, 'decode.eventName');
       if (eventName !== 'DTokenSplit') return;
       const result = get(log, 'decode.result');
-      if (dtokenSplit === null) setTfuelSplit(result);
+      if (dtokenSplit === null) setDtokenSplit(result);
     })
   }, [logs, abiMap])
 
@@ -665,14 +665,14 @@ const SmartContract = ({ transaction, handleToggleDetailsClick, price, abiMap })
               <DetailsRow label="From Addr." data={<AddressTNS hash={get(data, 'from.address')} tns={transaction.fromTns} />} />
               <DetailsRow label="To Addr." data={<AddressTNS hash={get(data, 'to.address')} tns={transaction.toTns} />} />
               {receipt ? <DetailsRow label="Contract Address" data={receiptAddress} /> : null}
-              {hasTnt721Transfer && <DetailsRow label="Transaction Action" data={tokens.map((token, i) => {
+              {hasDnc721Transfer && <DetailsRow label="Transaction Action" data={tokens.map((token, i) => {
                 return <TransactionAction
                   key={i}
                   info={tokenInfoMap ? tokenInfoMap[`${token.contractAddress}`] : null}
                   disabled={abiMap[token.contractAddress] ? abiMap[token.contractAddress].length === 0 : true}
                   token={token} />
               })} />}
-              {(hasTnt20Transfer || hasTnt721Transfer) && <DetailsRow label="Tokens Transferred" data={tokens.map((token, i) => {
+              {(hasDnc20Transfer || hasDnc721Transfer) && <DetailsRow label="Tokens Transferred" data={tokens.map((token, i) => {
                 return <TokenTransferred
                   key={i}
                   info={tokenInfoMap ? tokenInfoMap[`${token.contractAddress}`] : null}
@@ -682,7 +682,7 @@ const SmartContract = ({ transaction, handleToggleDetailsClick, price, abiMap })
               <DetailsRow label="Gas Limit" data={data.gas_limit} />
               {receipt ? <DetailsRow label="Gas Used" data={receipt.GasUsed} /> : null}
               <DetailsRow label="Gas Price" data={<span className="currency dtoken">{gasPrice(transaction) + " DToken"}</span>} />
-              <DetailsRow label="DToken Burnt" data={<span className="currency dtoken">{getTfuelBurnt(transaction) + " DToken"}</span>} />
+              <DetailsRow label="DToken Burnt" data={<span className="currency dtoken">{getDtokenBurnt(transaction) + " DToken"}</span>} />
               {err ? <DetailsRow label="Error Message" data={<span className="text-danger">
                 {Buffer.from(get(transaction, 'receipt.EvmRet'), 'base64').toString() || err}
               </span>} /> : null}
@@ -690,8 +690,8 @@ const SmartContract = ({ transaction, handleToggleDetailsClick, price, abiMap })
                 price={price} feeSplit={feeSplit} dtokenSplit={dtokenSplit} />} />
               <DetailsRow label="Data" data={<SmartContractData data={getHex(data.data)} logs={logs}
                 hasDetails={false}
-              // hasDetails={hasTnt721Transfer ||
-              //   (hasTnt20Transfer && tokens.filter(t => t.type === 'TNT-20').reduce((pre, t) => pre && (t.from !== ZeroAddress), true))}
+              // hasDetails={hasDnc721Transfer ||
+              //   (hasDnc20Transfer && tokens.filter(t => t.type === 'DNC-20').reduce((pre, t) => pre && (t.from !== ZeroAddress), true))}
               />} />
             </tbody>
           </table>
@@ -967,7 +967,7 @@ const TransactionAction = ({ token, info, disabled }) => {
     return disabled ? <span className="text-disabled name"> {tokenName}</span> :
       <Link className="token-link" to={`/token/${address}`}> {tokenName}</Link>;
   }
-  return token.type === "TNT-721" && <div className="transaction-action-row">
+  return token.type === "DNC-721" && <div className="transaction-action-row">
     <div className="transaction-action-row__info">
       {isZeroFrom ? <>
         Mint&nbsp;&nbsp;
@@ -994,16 +994,16 @@ const TokenTransferred = ({ token, info, disabled }) => {
   const tokenName = info ? info.tokenName || name : "";
   const symbol = info ? info.symbol : "";
   const decimals = (info ? info.decimals : 0) || 0;
-  const isTnt20 = token.type === "TNT-20";
-  const isTnt721 = token.type === "TNT-721";
+  const isDnc20 = token.type === "DNC-20";
+  const isDnc721 = token.type === "DNC-721";
   const address = get(token, 'contractAddress');
   const Name = () => {
     if (disabled) {
-      if (isTnt20) return <span className="text-disabled name">{` ${name} ${symbol ? `(${symbol})` : '-'}`}</span>;
-      if (isTnt721) return <span className="text-disabled name"> {tokenName}</span>;
+      if (isDnc20) return <span className="text-disabled name">{` ${name} ${symbol ? `(${symbol})` : '-'}`}</span>;
+      if (isDnc721) return <span className="text-disabled name"> {tokenName}</span>;
     } else {
-      if (isTnt20) return <Link className="token-link" to={`/token/${address}`}>{` ${name} ${symbol ? `(${symbol})` : '-'}`}</Link>;
-      if (isTnt721) return <Link className="token-link" to={`/token/${address}`}> {tokenName}</Link>;
+      if (isDnc20) return <Link className="token-link" to={`/token/${address}`}>{` ${name} ${symbol ? `(${symbol})` : '-'}`}</Link>;
+      if (isDnc721) return <Link className="token-link" to={`/token/${address}`}> {tokenName}</Link>;
     }
   }
   const TokenId = () => {
@@ -1016,13 +1016,13 @@ const TokenTransferred = ({ token, info, disabled }) => {
     <b>To:</b>
     <Address hash={token.to} truncate={truncate} />
     <b>For</b>
-    {isTnt721 && <span className="text-container">
+    {isDnc721 && <span className="text-container">
       {/* Note: Disabled token feature */}
-      TNT-721 TokenID [<TokenId />]<Name />
-      {/* TNT-721 TokenID [<Link className="token-link__token-id" to="#">{token.tokenId}</Link>]
+      DNC-721 TokenID [<TokenId />]<Name />
+      {/* DNC-721 TokenID [<Link className="token-link__token-id" to="#">{token.tokenId}</Link>]
       <Link className="token-link" to="#">{name}</Link> */}
     </span>}
-    {isTnt20 && <span className="text-container">
+    {isDnc20 && <span className="text-container">
       {/* Note: Disabled token feature */}
       {formatQuantity(token.value, decimals, 2)}<Name />
       {/* {formatCoin(token.value)}<Link to="#">{`${name} (${symbol})`}</Link> */}
