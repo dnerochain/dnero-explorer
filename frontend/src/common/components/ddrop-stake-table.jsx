@@ -5,7 +5,7 @@ import BigNumber from 'bignumber.js';
 
 import { formatCoin } from 'common/helpers/utils';
 import { useIsMountedRef } from 'common/helpers/hooks';
-import { CommonFunctionABIs, TDropStakingAddress } from 'common/constants';
+import { CommonFunctionABIs, DDropStakingAddress } from 'common/constants';
 import { ethers } from "ethers";
 import smartContractApi from 'common/services/smart-contract-api';
 import Dnero from 'libs/Dnero';
@@ -16,9 +16,9 @@ import Config from '../../config';
 
 const MIN_DISPLAY_VALUE = new BigNumber(10).exponentiatedBy(18 - 2);
 const TRUNCATE = window.screen.width <= 560 ? 10 : 35;
-const contractAddress = TDropStakingAddress[Config.defaultDneroChainID];
+const contractAddress = DDropStakingAddress[Config.defaultDneroChainID];
 
-const TDropStakeTable = React.memo(({ address }) => {
+const DDropStakeTable = React.memo(({ address }) => {
   const isMountedRef = useIsMountedRef();
   const [balance, setBalance] = useState(0);
   useEffect(() => {
@@ -26,8 +26,8 @@ const TDropStakeTable = React.memo(({ address }) => {
     fetchBalance();
 
     async function fetchBalance() {
-      let balance = await fetchData(CommonFunctionABIs.estimatedTDropOwnedBy, [address],
-        [CommonFunctionABIs.estimatedTDropOwnedBy], contractAddress);
+      let balance = await fetchData(CommonFunctionABIs.estimatedDDropOwnedBy, [address],
+        [CommonFunctionABIs.estimatedDDropOwnedBy], contractAddress);
       if (!isMountedRef.current) return;
       setBalance(balance);
     }
@@ -79,17 +79,17 @@ const TDropStakeTable = React.memo(({ address }) => {
       <table className="data">
         <thead>
           <tr>
-            <th className="tdrop-token">TOKENS STAKED + REWARD (est.)</th>
+            <th className="ddrop-token">TOKENS STAKED + REWARD (est.)</th>
             <th className="address">TO CONTRACT</th>
             <th className="status">STATUS</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td className="tdrop-token"><div className="currency tdrop left">{`${formatCoin(balance)} TDrop`}</div></td>
+            <td className="ddrop-token"><div className="currency ddrop left">{`${formatCoin(balance)} DDrop`}</div></td>
             <td className="address">
               <Link to={`/account/${contractAddress}`}>
-                {_truncate(contractAddress, { length: TRUNCATE })}(TDrop Staking)
+                {_truncate(contractAddress, { length: TRUNCATE })}(DDrop Staking)
               </Link>
             </td>
             <td className="status">Staked</td>
@@ -100,4 +100,4 @@ const TDropStakeTable = React.memo(({ address }) => {
   </div>
 })
 
-export default TDropStakeTable;
+export default DDropStakeTable;
