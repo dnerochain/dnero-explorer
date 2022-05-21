@@ -29,7 +29,7 @@ export default class Dashboard extends React.PureComponent {
           else if (info._id === 'DTOKEN') dtokenInfo = info;
         })
         try {
-          let res = await priceService.getTfuelSupply();
+          let res = await priceService.getDtokenSupply();
           dtokenInfo.circulating_supply = get(res, 'data.circulation_supply')
           this.setState({ dneroInfo, dtokenInfo })
         } catch (err) {
