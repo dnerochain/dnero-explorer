@@ -154,7 +154,7 @@ export function decodeLogs(logs, abiMap) {
   })
 }
 
-export function checkTnt721(abi) {
+export function checkDnc721(abi) {
   const obj = {
     'balanceOf': { contains: false, type: 'function' },
     'ownerOf': { contains: false, type: 'function' },
@@ -172,7 +172,7 @@ export function checkTnt721(abi) {
   return _check(obj, abi);
 }
 
-export function checkTnt20(abi) {
+export function checkDnc20(abi) {
   const obj = {
     'name': { contains: false, type: 'function' },
     'symbol': { contains: false, type: 'function' },
