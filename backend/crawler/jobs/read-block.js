@@ -127,8 +127,8 @@ exports.Execute = async function (networkId) {
           getBlockAsyncList.push(rpc.getBlockByHeightAsync([{ 'height': i.toString(), 'include_eth_tx_hashes': true }]));
           getStakeAsyncList.push(rpc.getVcpByHeightAsync([{ 'height': i.toString() }]));
           getStakeAsyncList.push(rpc.getGcpByHeightAsync([{ 'height': i.toString() }]));
-          getStakeAsyncList.push(rpc.getEenpByHeightAsync([{ 'height': i.toString() }]));
-          getRewardAsyncList.push(rpc.getStakeRewardDistributionAsync([{ 'height': i.toString() }]));
+//          getStakeAsyncList.push(rpc.getEenpByHeightAsync([{ 'height': i.toString() }]));
+//          getRewardAsyncList.push(rpc.getStakeRewardDistributionAsync([{ 'height': i.toString() }]));
         }
         return Promise.all(getBlockAsyncList.concat(getStakeAsyncList).concat(getRewardAsyncList))
       } else {
@@ -144,8 +144,8 @@ exports.Execute = async function (networkId) {
         var updateVcpAsyncList = [];
         var updateGcpAsyncList = [];
         var upsertGcpAsyncList = [];
-        var updateEenpAsyncList = [];
-        var upsertEenpAsyncList = [];
+//        var updateEenpAsyncList = [];
+//        var upsertEenpAsyncList = [];
         var updateRewardAsyncList = [];
         var upsertRewardAsyncList = [];
         var insertStakeHistoryList = [];
@@ -189,20 +189,20 @@ exports.Execute = async function (networkId) {
                 })
               })
               upsertGcpAsyncList.push(stakeHelper.updateStakes(updateGcpAsyncList, 'gcp', stakeDao, cacheEnabled));
-            } else if (result.result.BlockHashEenpPairs) {  // hanndle EENP response
-              if (stakeBlockHeight !== 0 && upsertEenpAsyncList.length === 0) {
-                insertStakeHistoryList.push(stakeHelper.insertStakePairs(result.result.BlockHashEenpPairs,
-                  'eenp', stakeBlockHeight, stakeTimestamp, stakeHistoryDao))
-              }
-              if (upsertEenpAsyncList.length > 0) continue;
-              stakes.eenp = result.result.BlockHashEenpPairs;
-              result.result.BlockHashEenpPairs.forEach(eenpPair => {
-                eenpPair.EENs.forEach(candidate => {
-                  updateEenpAsyncList.push(candidate);
-                })
-              })
-              Logger.log(`updateEenpAsyncList length: ${updateEenpAsyncList.length}`);
-              upsertEenpAsyncList.push(stakeHelper.updateStakes(updateEenpAsyncList, 'eenp', stakeDao, cacheEnabled));
+            //} else if (result.result.BlockHashEenpPairs) {  // hanndle EENP response
+            //  if (stakeBlockHeight !== 0 && upsertEenpAsyncList.length === 0) {
+            //    insertStakeHistoryList.push(stakeHelper.insertStakePairs(result.result.BlockHashEenpPairs,
+            //      'eenp', stakeBlockHeight, stakeTimestamp, stakeHistoryDao))
+            //  }
+            //  if (upsertEenpAsyncList.length > 0) continue;
+            //  stakes.eenp = result.result.BlockHashEenpPairs;
+            //  result.result.BlockHashEenpPairs.forEach(eenpPair => {
+            //    eenpPair.EENs.forEach(candidate => {
+            //      updateEenpAsyncList.push(candidate);
+            //    })
+            //  })
+            //  Logger.log(`updateEenpAsyncList length: ${updateEenpAsyncList.length}`);
+            //  upsertEenpAsyncList.push(stakeHelper.updateStakes(updateEenpAsyncList, 'eenp', stakeDao, //cacheEnabled));
             } else if (result.result.BlockHashStakeRewardDistributionRuleSetPairs) { // handle split reward distribution
               if (upsertRewardAsyncList.length > 0) continue;
               result.result.BlockHashStakeRewardDistributionRuleSetPairs.forEach(pair => {
@@ -287,13 +287,13 @@ exports.Execute = async function (networkId) {
         Logger.log(`Number of upsert BLOCKS: ${upsertBlockAsyncList.length}`);
         Logger.log(`Number of upsert VCP: ${upsertVcpAsyncList.length}`);
         Logger.log(`Number of upsert GCP: ${upsertGcpAsyncList.length}`);
-        Logger.log(`Number of upsert EENP: ${upsertEenpAsyncList.length}`);
+//        Logger.log(`Number of upsert EENP: ${upsertEenpAsyncList.length}`);
         Logger.log(`Number of upsert Reward split distribution: ${upsertRewardAsyncList.length}`);
         Logger.log(`Number of upsert check points: ${upsertCheckpointAsyncList.length}`);
         Logger.log(`Number of upsert TRANSACTIONS: ${upsertTransactionAsyncList.length}`);
         Logger.log(`Number of upsert TOKEN txs: ${updateTokenList.length}`);
         return Promise.all(upsertBlockAsyncList, upsertVcpAsyncList, upsertGcpAsyncList,
-          upsertTransactionAsyncList, upsertCheckpointAsyncList, upsertEenpAsyncList, upsertRewardAsyncList,
+          upsertTransactionAsyncList, upsertCheckpointAsyncList, upsertRewardAsyncList,//upsertEenpAsyncList, upsertRewardAsyncList,
           txHelper.updateFees(validTransactionList, progressDao), updateTokenList)
       }
     })
