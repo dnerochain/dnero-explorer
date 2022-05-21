@@ -10,7 +10,7 @@ module.exports = {
   entry: path.join(srcDir, 'index.jsx'),
   output: {
     path: distDir,
-    publicPath: '/public/',
+    publicPath: '/public/js/',
     filename: "app.js",
     sourceMapFilename: "[file].map"
   },
