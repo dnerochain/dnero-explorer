@@ -220,7 +220,7 @@ var accountRouter = (app, accountDao, tokenDao, rpc, config) => {
       res.status(400).send({ type: 'invalid_address' })
       return;
     }
-    let { tokenType = 'TNT-20', days = 30, target = 'in' } = req.query;
+    let { tokenType = 'DNC-20', days = 30, target = 'in' } = req.query;
     days = Number(days);
     tokenDao.getInfoListByDaysAsync(address, tokenType, target, days)
       .then(infoList => {

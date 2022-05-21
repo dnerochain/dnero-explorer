@@ -19,25 +19,25 @@ exports.updateTokenHistoryBySmartContract = async function (sc, transactionDao, 
     return;
   }
 
-  const isTnt721 = checkTnt721(abi);
-  const isTnt20 = checkTnt20(abi);
-  if (!isTnt721 && !isTnt20) {
+  const isDnc721 = checkDnc721(abi);
+  const isDnc20 = checkDnc20(abi);
+  if (!isDnc721 && !isDnc20) {
     return;
   }
   const address = sc.address;
-  const tokenType = isTnt721 ? 'TNT-721' : 'TNT-20';
+  const tokenType = isDnc721 ? 'DNC-721' : 'DNC-20';
   let tokenName = ""
   try {
-    tokenName = await _getTNT20Name(address, abi);
+    tokenName = await _getDNC20Name(address, abi);
   } catch (e) {
     console.log('Error in fetch token name by name function in updateTokenHistoryBySmartContract: ', e.message);
   }
   console.log('tokenName after name function:', tokenName);
-  if (tokenName === "" && isTnt721) {
+  if (tokenName === "" && isDnc721) {
     try {
-      tokenName = await _getTNT721Name(address, abi);
+      tokenName = await _getDNC721Name(address, abi);
     } catch (e) {
-      console.log('Error in fetch TNT-721 token name by tokenURI in updateTokenHistoryBySmartContract: ', e.message);
+      console.log('Error in fetch DNC-721 token name by tokenURI in updateTokenHistoryBySmartContract: ', e.message);
     }
     console.log('tokenName after tokenURI function:', tokenName);
   }
@@ -94,7 +94,7 @@ exports.updateTokenHistoryBySmartContract = async function (sc, transactionDao, 
 
 }
 
-function checkTnt721(abi) {
+function checkDnc721(abi) {
   const obj = {
     'balanceOf': { contains: false, type: 'function' },
     'ownerOf': { contains: false, type: 'function' },
@@ -112,7 +112,7 @@ function checkTnt721(abi) {
   return _check(obj, abi);
 }
 
-function checkTnt20(abi) {
+function checkDnc20(abi) {
   const obj = {
     'name': { contains: false, type: 'function' },
     'symbol': { contains: false, type: 'function' },
@@ -180,7 +180,7 @@ function decodeLogs(logs, abi) {
     }
   })
 }
-async function _getTNT20Name(address, abi) {
+async function _getDNC20Name(address, abi) {
   const arr = abi.filter(obj => obj.name == "name" && obj.type === 'function');
   if (arr.length === 0) return "";
   const functionData = arr[0];
@@ -225,7 +225,7 @@ async function _getTNT20Name(address, abi) {
   }
 }
 
-async function _getTNT721Name(address, abi) {
+async function _getDNC721Name(address, abi) {
   const arr = abi.filter(obj => obj.name == "contractURI" && obj.type === 'function');
   if (arr.length === 0) return "";
   const functionData = arr[0];
@@ -297,7 +297,7 @@ async function updateTokenSummary(tokenArr, address, tokenName, tokenType, abi, 
   };
   try {
     tokenInfo.max_total_supply = await getMaxTotalSupply(address, abi);
-    if (tokenType === 'TNT-20') {
+    if (tokenType === 'DNC-20') {
       tokenInfo.decimals = await getDecimals(address, abi);
       tokenInfo.symbol = await getSymbol(address, abi);
     }
@@ -306,12 +306,12 @@ async function updateTokenSummary(tokenArr, address, tokenName, tokenType, abi, 
   }
   // Collect balance changes and store in holderMap
   /* holderMap = {
-      // TNT-20
-      TNT20: {
+      // DNC-20
+      DNC20: {
         ${account_address}: balance_change,
         ...
       }
-      // TNT-721
+      // DNC-721
       ${tokenId}: {
         ${account_address}: balance_change,
         ...
@@ -322,7 +322,7 @@ async function updateTokenSummary(tokenArr, address, tokenName, tokenType, abi, 
   for (let token of tokenArr) {
     let from = token.from.toLowerCase();
     let to = token.to.toLowerCase();
-    const key = token.token_id != null ? token.token_id : 'TNT20';
+    const key = token.token_id != null ? token.token_id : 'DNC20';
     let value = token.value || 1;
     if (from !== ZeroAddress) {
       if (holders[key] === undefined) {
@@ -352,7 +352,7 @@ async function updateTokenSummary(tokenArr, address, tokenName, tokenType, abi, 
   const totalHolderSet = new Set();
   for (let key of Object.keys(holders)) {
     const map = holders[`${key}`];
-    const tokenId = key === 'TNT20' ? null : key;
+    const tokenId = key === 'DNC20' ? null : key;
     let newHolderList = Object.keys(map);
 
     newHolderList.forEach(account => {
@@ -365,13 +365,13 @@ async function updateTokenSummary(tokenArr, address, tokenName, tokenType, abi, 
       }))
     })
     // Update token summary holders
-    if (key === 'TNT20') {
+    if (key === 'DNC20') {
       tokenInfo.holders.total = newHolderList.length;
     } else {
       tokenInfo.holders[`${tokenId}`] = newHolderList.length;
     }
   }
-  if (tokenType === 'TNT-721') {
+  if (tokenType === 'DNC-721') {
     tokenInfo.holders.total = totalHolderSet.size;
   }
   updateAsyncList.push(tokenSummaryDao.upsertAsync({ ...tokenInfo }));
