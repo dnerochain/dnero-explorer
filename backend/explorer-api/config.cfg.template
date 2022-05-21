@@ -3,11 +3,11 @@
         "uri": "",
         "address": "localhost",
         "port": 27017,
-        "dbName": "test"
+        "dbName": "explorer-apidb"
     },
     "node": {
         "address": "localhost",
-        "port": 16888
+        "port": 15511
     },
     "log": {
         "level": "debug"
@@ -17,12 +17,12 @@
         "socketIOPort": 2096
     },
     "blockchain": {
-        "networkId": "test_chain"
+        "networkId": "main_chain"
     },
     "coinmarketcap":{
         "key": "COINMARKETCAP_API_KEY",
-        "dneroId": 2416,
-        "dtokenId": 3822
+        "dneroId": 2418,
+        "dtokenId": 3824
     },
     "cert":{
         "enabled": false,
@@ -38,5 +38,5 @@
         "family": 4,
         "db": 0
     },
-    "defaultDneroChainID": "testnet"
+    "defaultDneroChainID": "mainnet"
 }
