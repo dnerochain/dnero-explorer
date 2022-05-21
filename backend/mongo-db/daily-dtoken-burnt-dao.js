@@ -1,13 +1,13 @@
 //------------------------------------------------------------------------------
 //  DAO for daily dtoken burnt
-//  Require index: `db.dailyTfuelBurnt.createIndex({timestamp:-1})`
+//  Require index: `db.dailyDtokenBurnt.createIndex({timestamp:-1})`
 //------------------------------------------------------------------------------
 
-module.exports = class DailyTfuelBurntDAO {
+module.exports = class DailyDtokenBurntDAO {
 
   constructor(execDir, client) {
     this.client = client;
-    this.collection = 'dailyTfuelBurnt';
+    this.collection = 'dailyDtokenBurnt';
   }
 
   insert(info, callback) {
@@ -23,8 +23,8 @@ module.exports = class DailyTfuelBurntDAO {
       }
       let result = {};
       result.timestamp = recordList[0].timestamp;
-      result.totalTfuelBurnt = recordList[0].totalTfuelBurnt;
-      result.dailyTfuelBurnt = recordList[0].dailyTfuelBurnt;
+      result.totalDtokenBurnt = recordList[0].totalDtokenBurnt;
+      result.dailyDtokenBurnt = recordList[0].dailyDtokenBurnt;
       callback(error, result)
     })
   }
