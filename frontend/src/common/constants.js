@@ -75,17 +75,17 @@ export const CurrencyLabels = {
 }
 
 export const TokenIcons = {
-  'TDrop Token': 'tdrop'
+  'DDrop Token': 'ddrop'
 }
 
 export const TxnPurpose = {
   0: 'Validator Staking',
   1: 'Sentry Staking',
-  2: 'Elite Edge Staking'
+  //2: 'Elite Edge Staking'
 }
 export const TxnSplitPurpose = {
   1: 'Sentry Stake Reward Split',
-  2: 'Elite Edge Stake Reward Split'
+  //2: 'Elite Edge Stake Reward Split'
 }
 export const TokenTypes = {
   DNERO: 'dnero',
@@ -94,8 +94,8 @@ export const TokenTypes = {
 
 export const nodeTypes = {
   vcp: 'Validator',
-  gcp: 'Sentry',
-  eenp: 'Elite Edge'
+  gcp: 'Sentry'//,
+  //eenp: 'Elite Edge'
 }
 
 export const Networks = {
@@ -108,7 +108,8 @@ export const Networks = {
 };
 
 export const NetworkUrlOfChainId = {
-  'https://explorer.dnerochain.org': Networks.DNERO_MAINNET,
+  'http://143.198.111.119': Networks.DNERO_MAINNET,
+  //'https://explorer.dnerochain.org': Networks.DNERO_MAINNET,
   'https://beta-explorer.dnerochain.org': Networks.DNERO_TESTNET,
   'https://sentry-testnet-explorer-amber.dnerochain.org': Networks.DNERO_TESTNET_AMBER,
   'https://sentry-testnet-explorer.dnerochain.org': Networks.DNERO_TESTNET_SAPPHIRE,
@@ -117,12 +118,14 @@ export const NetworkUrlOfChainId = {
 };
 
 export const EthRPCEndpoints = {
-  'https://explorer.dnerochain.org': "https://eth-rpc-api.dnerochain.org/rpc",
-  'https://beta-explorer.dnerochain.org': "https://eth-rpc-api-testnet.dnerochain.org/rpc",
-  'https://localhost': "http://localhost:18888/rpc",
+  //'https://explorer.dnerochain.org': "https://eth-rpc-api.dnerochain.org/rpc",
+  'http://143.198.111.119': "http://143.198.111.119:7554/rpc",
+  //'https://beta-explorer.dnerochain.org': "https://eth-rpc-api-testnet.dnerochain.org/rpc",
+  'https://localhost': "http://localhost:15444/rpc",
+  //'https://localhost': "http://localhost:18888/rpc",
 }
 
-export const TDropStakingAddress = {
+export const DDropStakingAddress = {
   'testnet': '0xa8bfa60203e55f86dc7013cbf3d8ff85bb1d3cc7',
   'mainnet': '0xa89c744db76266eca60e2b0f62afcd1f8581b7ed'
 };
@@ -206,10 +209,10 @@ export const CommonFunctionABIs = {
     "stateMutability": "view",
     "type": "function"
   },
-  estimatedTDropOwnedBy: {
+  estimatedDDropOwnedBy: {
     "constant": true,
     "inputs": [{ "internalType": "address", "name": "account", "type": "address" }],
-    "name": "estimatedTDropOwnedBy",
+    "name": "estimatedDDropOwnedBy",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "payable": false,
     "stateMutability": "view",
