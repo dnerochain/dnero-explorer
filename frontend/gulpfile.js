@@ -83,7 +83,7 @@ const clean = done => {
 
 const sync = done => {
   browserSync.init({
-      proxy: "https://localhost:4000"
+      proxy: "http://localhost:4000"
   });
   done();
 }
