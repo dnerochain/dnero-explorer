@@ -25,7 +25,7 @@ exports.updateToken = async function (tx, smartContractDao, tokenDao, tokenSumma
       infoMap[`${address}`].type = 'unknown';
     } else {
       infoMap[`${address}`].abi = abi;
-      infoMap[`${address}`].type = _checkTnt721(abi) ? 'TNT-721' : _checkTnt20(abi) ? 'TNT-20' : 'unknown';
+      infoMap[`${address}`].type = _checkDnc721(abi) ? 'DNC-721' : _checkDnc20(abi) ? 'DNC-20' : 'unknown';
       const tokenInfo = await tokenSummaryDao.getInfoByAddressAsync(address);
       infoMap[`${address}`].tokenName = get(tokenInfo, 'tokenName');
     }
@@ -145,7 +145,7 @@ const _decodeLogs = function (logs, infoMap) {
 }
 exports.decodeLogs = _decodeLogs;
 
-const _checkTnt721 = function (abi) {
+const _checkDnc721 = function (abi) {
   const obj = {
     'balanceOf': { contains: false, type: 'function' },
     'ownerOf': { contains: false, type: 'function' },
@@ -162,11 +162,11 @@ const _checkTnt721 = function (abi) {
 
   return _check(obj, abi);
 }
-exports.checkTnt721 = _checkTnt721;
+exports.checkDnc721 = _checkDnc721;
 
 
 
-const _checkTnt20 = function (abi) {
+const _checkDnc20 = function (abi) {
   const obj = {
     'name': { contains: false, type: 'function' },
     'symbol': { contains: false, type: 'function' },
@@ -183,7 +183,7 @@ const _checkTnt20 = function (abi) {
 
   return _check(obj, abi);
 }
-exports.checkTnt20 = _checkTnt20;
+exports.checkDnc20 = _checkDnc20;
 
 
 function _check(obj, abi) {
@@ -233,12 +233,12 @@ async function updateTokenSummary(tokenArr, infoMap, tokenSummaryDao, tokenHolde
   // Collect balance changes and store in holderMap
   /* holderMap = {
     ${contract_address}: {
-      // TNT-20
-      TNT20: {
+      // DNC-20
+      DNC20: {
         ${account_address}: balance_change,
         ...
       }
-      // TNT-721
+      // DNC-721
       ${tokenId}: {
         ${account_address}: balance_change,
         ...
@@ -260,7 +260,7 @@ async function updateTokenSummary(tokenArr, infoMap, tokenSummaryDao, tokenHolde
     let holders = holderMap[`${token.contract_address}`];
     let from = token.from.toLowerCase();
     let to = token.to.toLowerCase();
-    const key = token.token_id != null ? token.token_id : 'TNT20';
+    const key = token.token_id != null ? token.token_id : 'DNC20';
     let value = token.value || 1;
     if (from !== ZeroAddress) {
       if (holders[key] === undefined) {
@@ -287,7 +287,7 @@ async function updateTokenSummary(tokenArr, infoMap, tokenSummaryDao, tokenHolde
     const holders = holderMap[`${address}`];
     for (let key of Object.keys(holders)) {
       const map = holders[`${key}`];
-      const tokenId = key === 'TNT20' ? null : key;
+      const tokenId = key === 'DNC20' ? null : key;
       let holderList = Object.keys(map);
       const newHolderList = new Set(holderList);
       const removeList = [];  // contains zero balance holders
@@ -315,7 +315,7 @@ async function updateTokenSummary(tokenArr, infoMap, tokenSummaryDao, tokenHolde
       // Remove zero balance holders in removeList
       updateAsyncList.push(tokenHolderDao.removeRecordByAdressAndHolderListAsync(address, tokenId, removeList));
       // Update token summary holders
-      if (key === 'TNT20') {
+      if (key === 'DNC20') {
         tokenSummaryMap[address].holders.total += newHolderList.size - removeList.length;
       } else {
         if (tokenSummaryMap[address].holders[tokenId] === undefined) {
@@ -331,9 +331,9 @@ async function updateTokenSummary(tokenArr, infoMap, tokenSummaryDao, tokenHolde
   }
   await Promise.all(updateAsyncList);
   const updateHoldersList = [];
-  // Update tokenSummary.total for TNT-721 tokens
+  // Update tokenSummary.total for DNC-721 tokens
   for (let address of Object.keys(tokenSummaryMap)) {
-    if (tokenSummaryMap[`${address}`].type !== 'TNT-721') {
+    if (tokenSummaryMap[`${address}`].type !== 'DNC-721') {
       continue;
     }
     try {
@@ -342,7 +342,7 @@ async function updateTokenSummary(tokenArr, infoMap, tokenSummaryDao, tokenHolde
       tokenSummaryMap[`${address}`].holders.total = holderSet.size;
       updateHoldersList.push(tokenSummaryDao.upsertAsync({ ...tokenSummaryMap[`${address}`] }))
     } catch (e) {
-      Logger.log('Error in update tokenSummary.total for TNT-721 tokens. Error:', e.message);
+      Logger.log('Error in update tokenSummary.total for DNC-721 tokens. Error:', e.message);
     }
   }
   return Promise.all(updateHoldersList);

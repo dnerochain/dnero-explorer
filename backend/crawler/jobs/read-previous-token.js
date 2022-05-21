@@ -1,7 +1,7 @@
 const { get } = require('lodash');
 const { EventHashMap, ZeroAddress, CommonEventABIs } = require('../helper/constants');
 var Logger = require('../helper/logger');
-var { decodeLogs, checkTnt721, checkTnt20, checkAndInsertToken } = require('../helper/smart-contract');
+var { decodeLogs, checkDnc721, checkDnc20, checkAndInsertToken } = require('../helper/smart-contract');
 var { getHex } = require('../helper/utils');
 var { ethers } = require("ethers");
 
@@ -86,7 +86,7 @@ async function updateTokens(txs, smartContractDao, tokenDao, tokenSummaryDao) {
         infoMap[address].type = 'unknown';
       } else {
         infoMap[address].abi = abi;
-        infoMap[address].type = checkTnt721(abi) ? 'TNT-721' : checkTnt20(abi) ? 'TNT-20' : 'unknown';
+        infoMap[address].type = checkDnc721(abi) ? 'DNC-721' : checkDnc20(abi) ? 'DNC-20' : 'unknown';
         const tokenInfo = await tokenSummaryDao.getInfoByAddressAsync(address);
         infoMap[address].tokenName = get(tokenInfo, 'tokenName');
       }

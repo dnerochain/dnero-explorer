@@ -1,7 +1,7 @@
 var get = require('lodash/get');
 var map = require('lodash/map');
 var Logger = require('../helper/logger');
-var { checkTnt721, checkTnt20 } = require('../helper/smart-contract');
+var { checkDnc721, checkDnc20 } = require('../helper/smart-contract');
 var { getHex } = require('../helper/utils');
 var { ethers } = require("ethers");
 
@@ -29,10 +29,10 @@ exports.Initialize = function (transactionDaoInstance, accountTxDaoInstance, sma
   tokenHolderDao = tokenHolderDaoInstance;
   tokenSummaryDao = tokenSummaryDaoInstance;
 }
-exports.UpdateTNT721Name = async function () {
+exports.UpdateDNC721Name = async function () {
   let tokenSummaryInfoList = [];
   try {
-    tokenSummaryInfoList = await tokenSummaryDao.getRecordsAsync({ type: "TNT-721", name: "" });
+    tokenSummaryInfoList = await tokenSummaryDao.getRecordsAsync({ type: "DNC-721", name: "" });
     Logger.log('tokenSummaryInfoList[0]:', tokenSummaryInfoList[0]);
     Logger.log('tokenSummaryInfoList.length:', tokenSummaryInfoList.length);
   } catch (e) {
@@ -53,7 +53,7 @@ exports.UpdateTNT721Name = async function () {
     }];
     let tokenName = ""
     try {
-      tokenName = await _getTNT20Name(address, nameAbi);
+      tokenName = await _getDNC20Name(address, nameAbi);
     } catch (e) {
       Logger.log('Error in fetch token name by name function in updateTokenHistoryBySmartContract: ', e.message);
     }
@@ -69,9 +69,9 @@ exports.UpdateTNT721Name = async function () {
     }];
     if (tokenName === "") {
       try {
-        tokenName = await _getTNT721Name(address, tokenURIAbi);
+        tokenName = await _getDNC721Name(address, tokenURIAbi);
       } catch (e) {
-        Logger.log('Error in fetch TNT-721 token name by tokenURI in updateTokenHistoryBySmartContract: ', e.message);
+        Logger.log('Error in fetch DNC-721 token name by tokenURI in updateTokenHistoryBySmartContract: ', e.message);
       }
       Logger.log('tokenName after tokenURI function:', tokenName);
     }
@@ -84,10 +84,10 @@ exports.UpdateTNT721Name = async function () {
   }
   Logger.log('Mission Completed!');
 }
-exports.UpdateTNT20Symbol = async function () {
+exports.UpdateDNC20Symbol = async function () {
   let tokenSummaryInfoList = [];
   try {
-    tokenSummaryInfoList = await tokenSummaryDao.getRecordsAsync({ type: "TNT-20" });
+    tokenSummaryInfoList = await tokenSummaryDao.getRecordsAsync({ type: "DNC-20" });
     Logger.log('tokenSummaryInfoList[0]:', tokenSummaryInfoList[0]);
     Logger.log('tokenSummaryInfoList.length:', tokenSummaryInfoList.length);
   } catch (e) {
@@ -112,7 +112,7 @@ exports.UpdateTNT20Symbol = async function () {
     try {
       symbol = await getSymbol(address, abi);
     } catch (e) {
-      Logger.log('Error in fetch symbol in UpdateTNT20Symbol: ', e.message);
+      Logger.log('Error in fetch symbol in UpdateDNC20Symbol: ', e.message);
     }
     tokenInfo.symbol = symbol;
     await tokenSummaryDao.upsertAsync({ ...tokenInfo });
@@ -152,10 +152,10 @@ exports.Execute = async function () {
       continue;
     }
 
-    const isTnt721 = checkTnt721(abi);
-    const isTnt20 = checkTnt20(abi);
-    if (!isTnt721 && !isTnt20) {
-      Logger.log(`Smart contract #${i}/${smartContractIds.length} Add:${address} is not TNT-721 or TNT-20, skip.`);
+    const isDnc721 = checkDnc721(abi);
+    const isDnc20 = checkDnc20(abi);
+    if (!isDnc721 && !isDnc20) {
+      Logger.log(`Smart contract #${i}/${smartContractIds.length} Add:${address} is not DNC-721 or DNC-20, skip.`);
       continue;
     }
 
@@ -163,24 +163,24 @@ exports.Execute = async function () {
       Logger.log(`Smart contract #${i}/${smartContractIds.length} Add:${address} is been updated in tokenSummaryDao, skip.`);
       continue;
     }
-    const tokenType = isTnt721 ? 'TNT-721' : 'TNT-20';
+    const tokenType = isDnc721 ? 'DNC-721' : 'DNC-20';
     Logger.log('Token type:', tokenType);
     let tokenName = ""
     try {
-      tokenName = await _getTNT20Name(address, abi);
+      tokenName = await _getDNC20Name(address, abi);
     } catch (e) {
       Logger.log('Error in fetch token name by name function in updateTokenHistoryBySmartContract: ', e.message);
     }
     Logger.log('tokenName after name function:', tokenName);
-    if (tokenName === "" && isTnt721) {
+    if (tokenName === "" && isDnc721) {
       try {
-        tokenName = await _getTNT721Name(address, abi);
+        tokenName = await _getDNC721Name(address, abi);
       } catch (e) {
-        Logger.log('Error in fetch TNT-721 token name by tokenURI in updateTokenHistoryBySmartContract: ', e.message);
+        Logger.log('Error in fetch DNC-721 token name by tokenURI in updateTokenHistoryBySmartContract: ', e.message);
       }
       Logger.log('tokenName after tokenURI function:', tokenName);
     }
-    if (tokenName === "" && tokenType === "TNT-20") {
+    if (tokenName === "" && tokenType === "DNC-20") {
       Logger.log(`Failed to fetch total name, skip.`);
       return;
     }
@@ -277,7 +277,7 @@ function decodeLogsByAbi(logs, abi) {
   })
 }
 
-async function _getTNT20Name(address, abi) {
+async function _getDNC20Name(address, abi) {
   const arr = abi.filter(obj => obj.name == "name" && obj.type === 'function');
   if (arr.length === 0) return "";
   const functionData = arr[0];
@@ -317,12 +317,12 @@ async function _getTNT20Name(address, abi) {
     let url = abiCoder.decode(outputTypes, outputValues)[0];
     return url;
   } catch (e) {
-    Logger.log('Error occurs in getTNT20Name:', e.message);
+    Logger.log('Error occurs in getDNC20Name:', e.message);
     return "";
   }
 }
 
-async function _getTNT721Name(address, abi) {
+async function _getDNC721Name(address, abi) {
   const arr = abi.filter(obj => obj.name == "contractURI" && obj.type === 'function');
   if (arr.length === 0) return "";
   const functionData = arr[0];
@@ -377,7 +377,7 @@ async function _getTNT721Name(address, abi) {
         })
     }
   } catch (e) {
-    Logger.log('Error occurs in getTNT721Name:', e.message);
+    Logger.log('Error occurs in getDNC721Name:', e.message);
     return "";
   }
 }
@@ -403,12 +403,12 @@ async function updateTokenSummary(tokenArr, address, tokenName, tokenType, abi, 
   }
   // Collect balance changes and store in holderMap
   /* holderMap = {
-      // TNT-20
-      TNT20: {
+      // DNC-20
+      DNC20: {
         ${account_address}: balance_change,
         ...
       }
-      // TNT-721
+      // DNC-721
       ${tokenId}: {
         ${account_address}: balance_change,
         ...
@@ -419,7 +419,7 @@ async function updateTokenSummary(tokenArr, address, tokenName, tokenType, abi, 
   for (let token of tokenArr) {
     let from = token.from.toLowerCase();
     let to = token.to.toLowerCase();
-    const key = token.token_id != null ? token.token_id : 'TNT20';
+    const key = token.token_id != null ? token.token_id : 'DNC20';
     let value = token.value || 1;
     if (from !== ZeroAddress) {
       if (holders[key] === undefined) {
@@ -449,7 +449,7 @@ async function updateTokenSummary(tokenArr, address, tokenName, tokenType, abi, 
   const totalHolderSet = new Set();
   for (let key of Object.keys(holders)) {
     const map = holders[`${key}`];
-    const tokenId = key === 'TNT20' ? null : key;
+    const tokenId = key === 'DNC20' ? null : key;
     let newHolderList = Object.keys(map);
 
     newHolderList.forEach(account => {
@@ -462,13 +462,13 @@ async function updateTokenSummary(tokenArr, address, tokenName, tokenType, abi, 
       }))
     })
     // Update token summary holders
-    if (key === 'TNT20') {
+    if (key === 'DNC20') {
       tokenInfo.holders.total = newHolderList.length;
     } else {
       tokenInfo.holders[`${tokenId}`] = newHolderList.length;
     }
   }
-  if (tokenType === 'TNT-721') {
+  if (tokenType === 'DNC-721') {
     tokenInfo.holders.total = totalHolderSet.size;
   }
   updateAsyncList.push(tokenSummaryDao.upsertAsync({ ...tokenInfo }));
