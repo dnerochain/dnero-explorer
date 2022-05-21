@@ -18,7 +18,7 @@ var activeAccountDaoLib = require('../mongo-db/active-account-dao')
 var totalAccountDaoLib = require('../mongo-db/total-account-dao')
 var dailyAccountDaoLib = require('../mongo-db/daily-account-dao.js')
 var rewardDistributionDaoLib = require('../mongo-db/reward-distribution-dao.js')
-var dailyTfuelBurntDaoLib = require('../mongo-db/daily-dtoken-burnt-dao')
+var dailyDtokenBurntDaoLib = require('../mongo-db/daily-dtoken-burnt-dao')
 var stakeHistoryDaoLib = require('../mongo-db/stake-history-dao.js')
 var tokenDaoLib = require('../mongo-db/token-dao.js')
 var tokenSummaryDaoLib = require('../mongo-db/token-summary-dao.js')
@@ -192,8 +192,8 @@ function setupGetBlockCronJob(mongoClient, networkId) {
   rewardDistributionDao = new rewardDistributionDaoLib(__dirname, mongoClient);
   bluebird.promisifyAll(rewardDistributionDao);
 
-  dailyTfuelBurntDao = new dailyTfuelBurntDaoLib(__dirname, mongoClient);
-  bluebird.promisifyAll(dailyTfuelBurntDao);
+  dailyDtokenBurntDao = new dailyDtokenBurntDaoLib(__dirname, mongoClient);
+  bluebird.promisifyAll(dailyDtokenBurntDao);
 
   stakeHistoryDao = new stakeHistoryDaoLib(__dirname, mongoClient);
   bluebird.promisifyAll(stakeHistoryDao);
@@ -230,7 +230,7 @@ function setupGetBlockCronJob(mongoClient, networkId) {
   accountingJob.InitializeForDTokenEarning(transactionDao, accountTxDao, accountingDao, config.accounting.walletAddresses);
   schedule.scheduleJob('Record DToken Earning', '0 0 0 * * *', 'America/Tijuana', accountingJob.RecordDTokenEarning); // PST mid-night
 
-  accountJob.Initialize(dailyAccountDao, activeAccountDao, totalAccountDao, accountDao, dailyTfuelBurntDao);
+  accountJob.Initialize(dailyAccountDao, activeAccountDao, totalAccountDao, accountDao, dailyDtokenBurntDao);
   activeAccountDao.getLatestRecordsAsync(1)
     .then(() => { }).catch(err => {
       if (err.message.includes('NO_RECORD')) {
