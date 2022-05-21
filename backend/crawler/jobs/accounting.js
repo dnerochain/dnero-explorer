@@ -4,7 +4,7 @@ const BigNumber = require('bignumber.js');
 const rp = require('request-promise');
 const COINBASE = 0;
 const WEI = 1000000000000000000;
-const DTOKEN_ID = '3822';
+const DTOKEN_ID = '3824';
 
 BigNumber.config({ EXPONENTIAL_AT: 1e+9 });
 
