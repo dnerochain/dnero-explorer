@@ -3,24 +3,24 @@
         "uri": "",
         "address": "localhost",
         "port": 27017,
-        "dbName": "test"
+        "dbName": "explorerdb"
     },
     "node": {
         "address": "localhost",
-        "port": 16888
+        "port": 15511
     },
     "log": {
         "level": "debug"
     },
     "blockchain": {
-        "networkId": "test_chain",
+        "networkId": "main_chain",
         "startHeight": 1
     },
     "accounting": {
         "coinmarketcapApiKey": "COINMARKETCAP_API_KEY",
         "walletAddresses": [
-            "2416",
-            "3822"
+            "2418",
+            "3824"
         ]
     },
     "redis": {
@@ -37,5 +37,5 @@
     },
     "maxBlockPerCrawl": 2,
     "retrieveTokenStartHeight": 0,
-    "defaultDneroChainID": "testnet"
+    "defaultDneroChainID": "mainnet"
 }
