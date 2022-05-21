@@ -246,7 +246,7 @@ class SendTx extends Tx{
         super();
 
         let totalDneroWeiBN = new BigNumber(0);
-        let totalTfuelWeiBN = new BigNumber(0);
+        let totalDtokenWeiBN = new BigNumber(0);
         let feeInDTokenWeiBN = BigNumber.isBigNumber(feeInDTokenWei) ? feeInDTokenWei : (new BigNumber(feeInDTokenWei));
 
         for(var i = 0; i < outputs.length; i++){
@@ -258,12 +258,12 @@ class SendTx extends Tx{
             let dtokenWeiBN = BigNumber.isBigNumber(dtokenWei) ? dtokenWei : (new BigNumber(dtokenWei));
 
             totalDneroWeiBN = totalDneroWeiBN.plus(dneroWeiBN);
-            totalTfuelWeiBN = totalTfuelWeiBN.plus(dtokenWeiBN);
+            totalDtokenWeiBN = totalDtokenWeiBN.plus(dtokenWeiBN);
         }
 
         this.fee = new Coins(new BigNumber(0), feeInDTokenWeiBN);
 
-        let txInput = new TxInput(senderAddr, totalDneroWeiBN, totalTfuelWeiBN.plus(feeInDTokenWeiBN), senderSequence);
+        let txInput = new TxInput(senderAddr, totalDneroWeiBN, totalDtokenWeiBN.plus(feeInDTokenWeiBN), senderSequence);
         this.inputs = [txInput];
 
         this.outputs = [];

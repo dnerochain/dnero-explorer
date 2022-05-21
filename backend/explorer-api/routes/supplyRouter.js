@@ -4,7 +4,7 @@ var bodyParser = require('body-parser');
 var helper = require('../helper/utils');
 
 
-var supplyRouter = (app, progressDao, dailyTfuelBurntDao, rpc, config) => {
+var supplyRouter = (app, progressDao, dailyDtokenBurntDao, rpc, config) => {
   router.use(bodyParser.urlencoded({ extended: true }));
 
   // The api to get total amount of Dnero
@@ -19,7 +19,7 @@ var supplyRouter = (app, progressDao, dailyTfuelBurntDao, rpc, config) => {
 
   // The api to get total amount of DToken
   router.get("/supply/dtoken", (req, res) => {
-    console.log('Querying the total amount of Tfuel.');
+    console.log('Querying the total amount of Dtoken.');
     if (config.blockchain.networkId !== 'main_net_chain') {
       const data = ({
         "total_supply": 5000000000,
@@ -53,7 +53,7 @@ var supplyRouter = (app, progressDao, dailyTfuelBurntDao, rpc, config) => {
   });
 
   router.get("/supply/dtoken/burnt", async (req, res) => {
-    console.log('Querying the total Tfuel burnt amount.');
+    console.log('Querying the total Dtoken burnt amount.');
     try {
       let response = await rpc.getAccountAsync([{ 'address': '0x0' }]);
       let account = JSON.parse(response).result;
@@ -71,12 +71,12 @@ var supplyRouter = (app, progressDao, dailyTfuelBurntDao, rpc, config) => {
     }
   })
 
-  router.get("/supply/dailyTfuelBurnt", async (req, res) => {
+  router.get("/supply/dailyDtokenBurnt", async (req, res) => {
     let { timestamp = 0 } = req.query;
     if (Number.isNaN(timestamp)) {
       res.status(400).send("Wrong parameter")
     } else if (timestamp === 0) {
-      dailyTfuelBurntDao.getLatestRecordAsync()
+      dailyDtokenBurntDao.getLatestRecordAsync()
         .then(info => {
           const data = {
             type: 'daily_stake_list',
@@ -87,9 +87,9 @@ var supplyRouter = (app, progressDao, dailyTfuelBurntDao, rpc, config) => {
           res.status(404).send(error)
         })
     } else {
-      dailyTfuelBurntDao.getLatestTimestampAsync(timestamp)
+      dailyDtokenBurntDao.getLatestTimestampAsync(timestamp)
         .then(ts => {
-          dailyTfuelBurntDao.getRecordByTimestampAsync(ts)
+          dailyDtokenBurntDao.getRecordByTimestampAsync(ts)
             .then(infoList => {
               const data = {
                 type: 'daily_stake_list',

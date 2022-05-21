@@ -20,7 +20,7 @@ var checkpointDaoLib = require('../mongo-db/checkpoint-dao.js');
 var smartContractDaoLib = require('../mongo-db/smart-contract-dao.js')
 var activeAccountDaoLib = require('../mongo-db/active-account-dao.js')
 var rewardDistributionDaoLib = require('../mongo-db/reward-distribution-dao.js')
-var dailyTfuelBurntDaoLib = require('../mongo-db/daily-dtoken-burnt-dao')
+var dailyDtokenBurntDaoLib = require('../mongo-db/daily-dtoken-burnt-dao')
 var stakeHistoryDaoLib = require('../mongo-db/stake-history-dao.js')
 var tokenDaoLib = require('../mongo-db/token-dao.js')
 var tokenSummaryDaoLib = require('../mongo-db/token-summary-dao.js')
@@ -144,8 +144,8 @@ function main() {
       bluebird.promisifyAll(activeActDao);
       rewardDistributionDao = new rewardDistributionDaoLib(__dirname, mongoClient);
       bluebird.promisifyAll(rewardDistributionDao);
-      dailyTfuelBurntDao = new dailyTfuelBurntDaoLib(__dirname, mongoClient);
-      bluebird.promisifyAll(dailyTfuelBurntDao);
+      dailyDtokenBurntDao = new dailyDtokenBurntDaoLib(__dirname, mongoClient);
+      bluebird.promisifyAll(dailyDtokenBurntDao);
       stakeHistoryDao = new stakeHistoryDaoLib(__dirname, mongoClient);
       bluebird.promisifyAll(stakeHistoryDao);
       tokenDao = new tokenDaoLib(__dirname, mongoClient);
@@ -216,7 +216,7 @@ function main() {
       // stake router
       stakeRouter(app, stakeDao, blockDao, accountDao, progressDao, stakeHistoryDao, config);
       // supply router
-      supplyRouter(app, progressDao, dailyTfuelBurntDao, rpc, config);
+      supplyRouter(app, progressDao, dailyDtokenBurntDao, rpc, config);
       // price router
       priceRouter(app, priceDao, progressDao, config)
       // accounting router
