@@ -7,14 +7,14 @@ let activeActDao = null;
 let dailyAccountDao = null;
 let totalActDao = null;
 let accountDao = null;
-let dailyTfuelBurntDao = null;
+let dailyDtokenBurntDao = null;
 
-exports.Initialize = function (dailyAccountDaoInstance, activeActDaoInstance, totalActDaoInstance, accountDaoInstance, dailyTfuelBurntDaoInstance) {
+exports.Initialize = function (dailyAccountDaoInstance, activeActDaoInstance, totalActDaoInstance, accountDaoInstance, dailyDtokenBurntDaoInstance) {
   dailyAccountDao = dailyAccountDaoInstance;
   activeActDao = activeActDaoInstance;
   totalActDao = totalActDaoInstance;
   accountDao = accountDaoInstance;
-  dailyTfuelBurntDao = dailyTfuelBurntDaoInstance;
+  dailyDtokenBurntDao = dailyDtokenBurntDaoInstance;
 }
 
 exports.Execute = function () {
@@ -32,18 +32,18 @@ exports.Execute = function () {
     }).catch(err => {
       Logger.log('error from account getTotalNumber:', err);
     })
-  dailyTfuelBurntDao.getLatestRecordAsync()
+  dailyDtokenBurntDao.getLatestRecordAsync()
     .then(async res => {
-      _dailyTfuelBurntInsert(res);
+      _dailyDtokenBurntInsert(res);
     }).catch(err => {
       Logger.log('error from getLatestRecordAsync:', err);
       if (err.message.includes('NO_RECORD')) {
-        _dailyTfuelBurntInsert();
+        _dailyDtokenBurntInsert();
       }
     })
 }
 
-async function _dailyTfuelBurntInsert(preData) {
+async function _dailyDtokenBurntInsert(preData) {
   let timestamp = (new Date().getTime() / 1000).toFixed();
   try {
     let response = await rpc.getAccountAsync([{ 'address': '0x0' }]);
@@ -51,14 +51,14 @@ async function _dailyTfuelBurntInsert(preData) {
     const addressZeroBalance = account ? account.coins.dtokenwei : 0;
     const feeInfo = await progressDao.getFeeAsync()
     const burntAmount = helper.sumCoin(addressZeroBalance, feeInfo.total_fee);
-    let dailyTfuelBurnt = '0';
+    let dailyDtokenBurnt = '0';
     if (preData) {
-      dailyTfuelBurnt = burntAmount.minus(new BigNumber(preData.totalTfuelBurnt)).toFixed();
+      dailyDtokenBurnt = burntAmount.minus(new BigNumber(preData.totalDtokenBurnt)).toFixed();
     }
-    await dailyTfuelBurntDao.insertAsync({
+    await dailyDtokenBurntDao.insertAsync({
       timestamp,
-      dailyTfuelBurnt,
-      totalTfuelBurnt: burntAmount.toFixed()
+      dailyDtokenBurnt,
+      totalDtokenBurnt: burntAmount.toFixed()
     })
   } catch (err) {
     Logger.log('error from getLatestRecordAsync try catch:', err);

@@ -103,7 +103,7 @@ exports.updateStakes = async function (candidateList, type, stakeDao, cacheEnabl
   await stakeDao.updateStakesAsync(candidateList, type);
 }
 exports.updateTotalStake = function (totalStake, progressDao) {
-  let totalDnero = 0, totalTfuel = 0;
+  let totalDnero = 0, totalDtoken = 0;
   let dneroHolders = new Set(), dtokenHolders = new Set();
   totalStake.vcp && totalStake.vcp.forEach(vcpPair => {
     vcpPair.Vcp.SortedCandidates.forEach(candidate => {
@@ -125,7 +125,7 @@ exports.updateTotalStake = function (totalStake, progressDao) {
     eenpPair.EENs.forEach(candidate => {
       dtokenHolders.add(candidate.Holder);
       candidate.Stakes.forEach(stake => {
-        totalTfuel = helper.sumCoin(totalTfuel, stake.withdrawn ? 0 : stake.amount);
+        totalDtoken = helper.sumCoin(totalDtoken, stake.withdrawn ? 0 : stake.amount);
       })
     })
   })
@@ -133,8 +133,8 @@ exports.updateTotalStake = function (totalStake, progressDao) {
   if (totalDnero.toFixed() != 0) {
     progressDao.upsertStakeProgressAsync('dnero', totalDnero.toFixed(), dneroHolders.size);
   }
-  if (totalTfuel.toFixed() != 0) {
-    progressDao.upsertStakeProgressAsync('dtoken', totalTfuel.toFixed(), dtokenHolders.size);
+  if (totalDtoken.toFixed() != 0) {
+    progressDao.upsertStakeProgressAsync('dtoken', totalDtoken.toFixed(), dtokenHolders.size);
   }
 }
 
