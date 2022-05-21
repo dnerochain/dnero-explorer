@@ -5,7 +5,7 @@ var webpack = require('webpack');
 var config = require('./webpack.config.js');
 var fs = require('fs');
 var compression = require('compression')
-let port = process.env.PORT || 443;
+let port = process.env.PORT || 5445;
 
 
 var app = express();
@@ -36,8 +36,8 @@ app.get('*', function (req, res) {
 
 
 
-var privateKey = fs.readFileSync('./cert/star_dnerochain_org.key');
-var certificate = fs.readFileSync('./cert/star_dnerochain_org.crt');
+var privateKey = null; //fs.readFileSync('./cert/star_dnerochain_org.key');
+var certificate = null; //fs.readFileSync('./cert/star_dnerochain_org.crt');
 var options = {
   key: privateKey,
   cert: certificate
