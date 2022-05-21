@@ -4,7 +4,7 @@ import socketClient from 'socket.io-client';
 import history from 'common/history'
 import cx from 'classnames';
 
-import { totalTfuelBurnt, hash, age, date } from 'common/helpers/blocks';
+import { totalDtokenBurnt, hash, age, date } from 'common/helpers/blocks';
 
 export default class BlockOverviewTable extends React.Component {
 
@@ -79,7 +79,7 @@ export default class BlockOverviewTable extends React.Component {
                   {includeDetails && 
                   <React.Fragment>
                     <td className="age" title={date(b)}>{ age(b) }</td>
-                    <td className="fee"><div className="currency dtoken">{ totalTfuelBurnt(b) }</div></td>
+                    <td className="fee"><div className="currency dtoken">{ totalDtokenBurnt(b) }</div></td>
                   </React.Fragment>}
                   <td className="txns">{ b.num_txs }</td>
                 </tr>

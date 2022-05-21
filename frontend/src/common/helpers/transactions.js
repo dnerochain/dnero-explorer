@@ -117,7 +117,7 @@ export function gasPrice(txn) {
   return f.toString();
 }
 
-export function getTfuelBurnt(txn) {
+export function getDtokenBurnt(txn) {
   let dtokenwei = 0;
   if (txn.type === 7) {
     const gasUsed = txn.receipt.GasUsed;

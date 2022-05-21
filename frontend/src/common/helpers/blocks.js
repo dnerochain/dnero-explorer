@@ -14,7 +14,7 @@ export function averageFee(block) {
     .toString(10);
 }
 
-export function totalTfuelBurnt(block) {
+export function totalDtokenBurnt(block) {
   BigNumber.set({ DECIMAL_PLACES: 2 });
   return reduce(block.txs, (bn, t) => bn.plus(new BigNumber(get(t, 'raw.fee.dtokenwei', 0))), new BigNumber(0))
     .dividedBy(WEI)

@@ -4,7 +4,7 @@ export const priceService = {
   getAllprices() {
     return apiService.get(`price/all`, {});
   },
-  getTfuelSupply() {
+  getDtokenSupply() {
     return apiService.get(`supply/dtoken`, {});
   }
 };
