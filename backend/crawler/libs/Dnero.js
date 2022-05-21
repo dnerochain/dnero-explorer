@@ -1,6 +1,7 @@
 var BigNumber = require('bignumber.js');
 var DneroJS = require('./dnerojs.esm');
-var _chainId = "testnet";
+//var _chainId = "testnet";
+var _chainId = "mainnet";
 
 class Dnero {
 
