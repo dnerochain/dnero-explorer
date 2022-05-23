@@ -1,4 +1,6 @@
-const BASE_URL = "https://api-wallet.dnerochain.org";
+//const BASE_URL = "https://api-wallet.dnerochain.org";
+//DEDICATED_ETH-RPC & EXPLORER-API FOR WEB-WALLET
+const BASE_URL = "http://143.198.132.249:7554/api";
 
 const DEFAULT_HEADERS = {
     'Accept': 'application/json',
