@@ -94,8 +94,8 @@ export const TokenTypes = {
 
 export const nodeTypes = {
   vcp: 'Validator',
-  gcp: 'Sentry'//,
-  //eenp: 'Elite Edge'
+  scp: 'Sentry',
+  eenp: 'Elite Edge'
 }
 
 export const Networks = {

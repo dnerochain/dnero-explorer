@@ -51,7 +51,7 @@ export default class TokenDashboard extends React.PureComponent {
       });
   }
   getAllStakes() {
-    stakeService.getAllStake(['eenp', 'vcp', 'gcp'])
+    stakeService.getAllStake(['eenp', 'vcp', 'scp'])
       .then(res => {
         const stakeList = get(res, 'data.body')
         let sum = stakeList.reduce((sum, info) => {

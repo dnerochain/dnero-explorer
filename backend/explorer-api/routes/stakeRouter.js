@@ -11,7 +11,7 @@ var stakeRouter = (app, stakeDao, blockDao, accountDao, progressDao, stakeHistor
 
   router.get("/stake/all", (req, res) => {
     console.log('Querying all stake.');
-    let { types = ['vcp', 'gcp'] } = req.query;
+    let { types = ['vcp', 'scp'] } = req.query;
     stakeDao.getAllStakesByTypesAsync(types)
       .then(stakeListInfo => {
         const data = ({
@@ -135,7 +135,7 @@ var stakeRouter = (app, stakeDao, blockDao, accountDao, progressDao, stakeHistor
 
   router.get("/stake/:id", (req, res) => {
     console.log('Querying stake by address.');
-    let { hasBalance = false, types = ['vcp', 'gcp'] } = req.query;
+    let { hasBalance = false, types = ['vcp', 'scp'] } = req.query;
     const address = helper.normalize(req.params.id.toLowerCase());
     //TODO: Remove isChromeExt related after review
     const origin = req.headers.origin;
@@ -153,7 +153,7 @@ var stakeRouter = (app, stakeDao, blockDao, accountDao, progressDao, stakeHistor
         }
         if (hasBalance === 'true') {
           for (let i = 0; i < stakeListInfo.holderRecords.length; i++) {
-            if (stakeListInfo.holderRecords[i].type === 'gcp') {
+            if (stakeListInfo.holderRecords[i].type === 'scp') {
               const accInfo = await accountDao.getAccountByPkAsync(stakeListInfo.holderRecords[i].source);
               stakeListInfo.holderRecords[i].source_dtokenwei_balance = accInfo.balance.dtokenwei;
             }

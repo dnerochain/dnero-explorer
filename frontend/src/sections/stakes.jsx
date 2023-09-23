@@ -51,7 +51,7 @@ export default class Stakes extends React.Component {
       })
   }
   getAllStakes(map) {
-    const types = this.props.stakeCoinType === 'dtoken' ? ['eenp'] : ['vcp', 'gcp'];
+    const types = this.props.stakeCoinType === 'dtoken' ? ['eenp'] : ['vcp', 'scp'];
     const self = this;
     stakeService.getAllStake(types)
       .then(res => {

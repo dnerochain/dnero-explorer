@@ -4,12 +4,12 @@ var get = require('lodash/get');
 
 var stakesCache = {
   vcp: new Map(),
-  gcp: new Map(),
+  scp: new Map(),
   eenp: new Map()
 }
 var stakeKeysCache = {
   vcp: new Set(),
-  gcp: new Set(),
+  scp: new Set(),
   eenp: new Set()
 }
 
@@ -113,8 +113,8 @@ exports.updateTotalStake = function (totalStake, progressDao) {
       })
     })
   })
-  totalStake.gcp && totalStake.gcp.forEach(gcpPair => {
-    gcpPair.Gcp.SortedSentrys.forEach(candidate => {
+  totalStake.scp && totalStake.scp.forEach(scpPair => {
+    scpPair.Gcp.SortedSentrys.forEach(candidate => {
       dneroHolders.add(candidate.Holder)
       candidate.Stakes.forEach(stake => {
         totalDnero = helper.sumCoin(totalDnero, stake.withdrawn ? 0 : stake.amount)
@@ -164,6 +164,6 @@ exports.insertStakePairs = async function (paris, type, blockHeight, timestamp, 
 
 const pathMap = {
   'vcp': 'Vcp.SortedCandidates',
-  'gcp': 'Gcp.SortedSentrys',
+  'scp': 'Gcp.SortedSentrys',
   'eenp': 'EENs'
 }

@@ -7,8 +7,8 @@ export const stakeService = {
   getTotalStake(type) {
     return apiService.get(`stake/totalAmount`, { params: { type } })
   },
-  //getStakeByAddress(address, types = ['vcp', 'gcp', 'eenp']) {
-  getStakeByAddress(address, types = ['vcp', 'gcp']) {	  
+  //getStakeByAddress(address, types = ['vcp', 'scp', 'eenp']) {
+  getStakeByAddress(address, types = ['vcp', 'scp']) {	  
     if (!address) {
       throw Error('Missing argument');
     }

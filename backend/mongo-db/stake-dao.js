@@ -136,7 +136,7 @@ module.exports = class stakeDAO {
     })
   }
 
-  getStakeByAddress(address, types = ['vcp', 'gcp'], callback) {
+  getStakeByAddress(address, types = ['vcp', 'scp'], callback) {
     const queryHolder = { 'holder': address, 'type': { $in: types } };
     const querySource = { 'source': address, 'type': { $in: types } };
     let holderRecords = [];
